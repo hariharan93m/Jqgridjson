@@ -1,15 +1,12 @@
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://127.0.0.1:27017/test1');
 
-var sp = new mongoose.Schema({
-	title : String,
-	name : String,
-	description : String,
-	by:String
-}, {
-	collection : 'test2'
+var sp = new mongoose.Schema ({
+	username : String,
+	Mobile : Number
+	} , { collection : 'unametable'
 });
-var cols = mongoose.model('test2', sp);
+var cols = mongoose.model('unametable', sp);
 
 exports.getJSON = function(req,res) {
 	

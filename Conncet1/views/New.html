@@ -11,23 +11,43 @@
 	type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		
 		jQuery("#jQGridDemo").jqGrid({
+			
 			url : '/getTableData',
 			datatype : "json",
-			colNames : [ 'username', 'Mobile'],
-			colModel : [ {
-				name : 'username',
-				index : 'uname',
-				width : 200,
-				stype : 'text',
-				editable : true
-			}, {
-				name : 'Mobile',
-				index : 'mobile',
-				width : 200,
-				editable : true
-			}],
-			jsonReader : {
+			colNames : [ 'id','username', 'Mobile','Actions'],
+			colModel : [ 
+						{
+							name : 'id',
+							index : 'id',
+							width : 200,
+						 	editable : true,
+							hidden: true
+						},{
+							name : 'username',
+							index : 'uname',
+							width : 200,
+							stype : 'text',
+							editable : true
+						},{
+							name : 'Mobile',
+							index : 'mobile',
+							width : 200,
+							editable : true
+						},{
+		            		name: 'actions',
+		            		index: 'actions',
+		            		width: 200,
+		            		formatter:'actions',
+		                	formatoptions: {keys: true, editbutton:false,delbutton:true,
+		                	delOptions: {
+		                        url: "/Delete"
+		                    }
+											} 	
+						}
+						],
+				jsonReader : {
 				repeatitems : false,
 				root : "lines"
 			},
@@ -35,20 +55,45 @@
 			rowNum : 5,
 			pager : 'jQGridDemoPager',
 			sortname : 'Id',
-			'cellEdit' : true,
+			/* 'cellEdit' : true, */
 			viewrecords : true,
 			sortorder : "desc",
-			caption : "List Employee Details"
+			/* caption : "List Employee Details", */
+			editurl:"/add",
+			ondblClickRow: function(id,ri,ci) {
+				
+				$("#jQGridDemo").jqGrid('editRow',id,true,null,function (val) {
+				
+					if (val.responseText != "") {
+						  $("#userGrid").trigger("reloadGrid", [{ current: true}]);
+							return true;
+					}
+				  
+				},'/edit');  
+			}	  
 		});
+		
 		$('#jQGridDemo').jqGrid('navGrid', '#jQGridDemoPager', {
 			edit : false,
 			add : false,
-			del : false
+			del : false,
+			search:false,
+			refresh:false
 		});
+			
 		$('#jQGridDemo').jqGrid('inlineNav', '#jQGridDemoPager', {
 			add : true,
-			save : true,
-			saveicon : "ui-icon-disk"
+			addicon : "ui-icon-plus",
+			edit: false,
+			/* width : 1000, */
+		 	addParams: {
+				useDefValues: true,
+			 	addRowParams: {
+						keys: true,
+						extraParams: {}
+				}	
+			}, 
+			save : false
 		});
 	});
 </script>

@@ -1,34 +1,79 @@
-var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://127.0.0.1:27017/test1');
+var UserWorker = require('./UserWorker');
 
-var sp = new mongoose.Schema ({
-	username : String,
-	Mobile : Number
-	} , { collection : 'unametable'
-});
-var cols = mongoose.model('unametable', sp);
+exports.getTabledata = function(req,res) {
+	
+	UserWorker.getTablevalues(function(err, resultData) {
+		
+		var messages = [];
+		var Data;
+		
+	for(var i = 0; i < resultData.length; i++) { 
+		
+		 var message={};
+		 Data = resultData[i];
+		 message.id = Data._id;
+		 message.username=Data.username;
+		 message.Mobile=Data.Mobile;
+		 messages.push(message);
+	}
+	
+	var Tablevalues = messages;
+	if (err) {
+		res.jsonp("error");
+	} else {
+		res.jsonp(Tablevalues);
+	}
+	});
+}
+	
+exports.getView = function(req, res) {
+	res.render('New.html');
+}
 
-exports.getJSON = function(req,res) {
+exports.deleteFunction = function(req,res) {
 	
-	Abc(function(err, resultData) {
+	var Reqbody=[];
+	Reqbody=req.body;
 	
+	UserWorker.deleteUsername(function(err, resultData) {
+		
 		if (err) {
 			res.jsonp("error");
 		} else {
 			res.jsonp(resultData);
 		}
-	});
+	},Reqbody);
 }
+//add
+exports.addFunction = function(req,res) {
 	
+	var Reqbody=[];
+	Reqbody=req.body;
 
-function Abc(mycallback) {
+	UserWorker.addUsername(function(err, resultData) {
+		
+		if (err) {
+			res.jsonp("error");
+		} else {
+			res.jsonp(resultData);
+		}
+	},Reqbody);
+}
 
-	cols.find({}, function(err, col) {
-		mycallback(err, col)
-	});
-};
 
-exports.getTable = function(req, res) {
-	res.render('New.html');
+//edit
 
+exports.editFunction = function(req,res) {
+	
+	var Reqbody=[];
+	Reqbody=req.body;
+
+	UserWorker.editUsername(function(err, resultData) {
+		
+		if (err) {
+			res.jsonp("error");
+		} else {
+			res.jsonp(resultData);
+		}
+	}, Reqbody);	
 }
